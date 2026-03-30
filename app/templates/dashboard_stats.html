@@ -1,0 +1,77 @@
+<!-- Dashboard stats partial — loaded inline and via HTMX polling -->
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+    <!-- Total Guests -->
+    <div class="bg-surface rounded-xl shadow-sm border border-border p-5 border-l-4 border-l-primary">
+        <p class="text-text-secondary text-xs font-medium uppercase tracking-wide">Total Guests</p>
+        <p class="font-heading text-3xl font-bold text-text-primary mt-1">{{ total }}</p>
+    </div>
+    <!-- Shared -->
+    <div class="bg-surface rounded-xl shadow-sm border border-border p-5 border-l-4 border-l-primary">
+        <p class="text-text-secondary text-xs font-medium uppercase tracking-wide">Shared</p>
+        <p class="font-heading text-3xl font-bold text-text-primary mt-1">{{ shared }}</p>
+    </div>
+    <!-- Not Shared -->
+    <div class="bg-surface rounded-xl shadow-sm border border-border p-5 border-l-4 border-l-primary">
+        <p class="text-text-secondary text-xs font-medium uppercase tracking-wide">Not Shared</p>
+        <p class="font-heading text-3xl font-bold text-text-primary mt-1">{{ not_shared }}</p>
+    </div>
+    <!-- Checked In -->
+    <div class="bg-surface rounded-xl shadow-sm border border-border p-5 border-l-4 border-l-success">
+        <p class="text-text-secondary text-xs font-medium uppercase tracking-wide">Checked In</p>
+        <p class="font-heading text-3xl font-bold text-success mt-1">{{ checked_in }}</p>
+    </div>
+    <!-- Total USD -->
+    <div class="bg-surface rounded-xl shadow-sm border border-border p-5 border-l-4 border-l-primary-dark">
+        <p class="text-text-secondary text-xs font-medium uppercase tracking-wide">Gifts (USD)</p>
+        <p class="font-heading text-2xl font-bold text-text-primary mt-1">${{ "%.2f"|format(total_usd) }}</p>
+    </div>
+    <!-- Total KHR -->
+    <div class="bg-surface rounded-xl shadow-sm border border-border p-5 border-l-4 border-l-accent">
+        <p class="text-text-secondary text-xs font-medium uppercase tracking-wide">Gifts (KHR)</p>
+        <p class="font-heading text-2xl font-bold text-text-primary mt-1">{{ "%.0f"|format(total_khr) }}&#x17DB;</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Chart -->
+    <div class="bg-surface rounded-xl shadow-sm border border-border p-6">
+        <h2 class="font-heading text-xl font-semibold text-text-primary mb-4">Gifts by Side</h2>
+        <div class="h-64">
+            <canvas id="giftsChart"
+                    data-bride-usd="{{ chart_data.bride_usd }}"
+                    data-bride-khr="{{ chart_data.bride_khr }}"
+                    data-groom-usd="{{ chart_data.groom_usd }}"
+                    data-groom-khr="{{ chart_data.groom_khr }}">
+            </canvas>
+        </div>
+    </div>
+
+    <!-- Recent Check-ins -->
+    <div class="bg-surface rounded-xl shadow-sm border border-border p-6">
+        <h2 class="font-heading text-xl font-semibold text-text-primary mb-4">Recent Check-Ins</h2>
+        {% if recent_checkins %}
+        <div class="space-y-3">
+            {% for guest in recent_checkins %}
+            <div class="flex items-center justify-between py-2 border-b border-border last:border-0">
+                <div>
+                    <p class="font-medium text-sm text-text-primary">{{ guest.full_name }}</p>
+                    <p class="text-xs text-text-secondary">
+                        {{ guest.side | capitalize }} side
+                        {% if guest.gift_amount and guest.gift_amount > 0 %}
+                        &middot; {{ guest.gift_currency }} {{ "%.2f"|format(guest.gift_amount) }}
+                        {% endif %}
+                    </p>
+                </div>
+                <span class="text-xs text-text-secondary">
+                    {% if guest.check_in_time %}
+                    {{ guest.check_in_time.strftime('%H:%M') }}
+                    {% endif %}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-text-secondary text-sm">No check-ins yet.</p>
+        {% endif %}
+    </div>
+</div>

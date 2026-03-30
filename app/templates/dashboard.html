@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Wedding Dashboard{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="font-heading text-3xl font-semibold text-text-primary">Dashboard</h1>
+    <p class="text-text-secondary text-sm mt-1">Overview of your wedding day</p>
+</div>
+
+<div id="dashboard-stats"
+     hx-get="{{ url_for('main.dashboard_stats') }}"
+     hx-trigger="every 30s"
+     hx-swap="innerHTML">
+    {% include "dashboard_stats.html" %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('htmx:afterSwap', function(event) {
+    if (event.detail.target.id === 'dashboard-stats') {
+        renderChart();
+    }
+});
+
+function renderChart() {
+    const canvas = document.getElementById('giftsChart');
+    if (!canvas) return;
+
+    if (canvas._chartInstance) {
+        canvas._chartInstance.destroy();
+    }
+
+    const ctx = canvas.getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Bride Side', 'Groom Side'],
+            datasets: [
+                {
+                    label: 'USD',
+                    data: [
+                        parseFloat(canvas.dataset.brideUsd) || 0,
+                        parseFloat(canvas.dataset.groomUsd) || 0
+                    ],
+                    backgroundColor: '#D4A574',
+                    borderRadius: 6,
+                },
+                {
+                    label: 'KHR',
+                    data: [
+                        parseFloat(canvas.dataset.brideKhr) || 0,
+                        parseFloat(canvas.dataset.groomKhr) || 0
+                    ],
+                    backgroundColor: '#A8324F',
+                    borderRadius: 6,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top' },
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#E8DFD3' },
+                },
+                x: {
+                    grid: { display: false },
+                }
+            }
+        }
+    });
+    canvas._chartInstance = chart;
+}
+
+document.addEventListener('DOMContentLoaded', renderChart);
+</script>
+{% endblock %}
