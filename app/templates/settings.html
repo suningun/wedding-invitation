@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Settings — Wedding Dashboard{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="font-heading text-3xl font-semibold text-text-primary">Wedding Settings</h1>
+    <p class="text-text-secondary text-sm mt-1">Configure your wedding details</p>
+</div>
+
+<div class="bg-surface rounded-xl shadow-sm border border-border p-6 md:p-8">
+    <form method="POST" action="{{ url_for('main.settings') }}">
+        {{ form.hidden_tag() }}
+
+        <!-- Invitation Template -->
+        <div class="mb-8">
+            <h2 class="font-heading text-xl font-semibold text-text-primary mb-4 pb-2 border-b border-border">Invitation Template</h2>
+            <div class="max-w-xs">
+                <label class="block text-sm font-medium text-text-secondary mb-2">Template Style</label>
+                {{ form.template(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm") }}
+                <p class="text-xs text-text-secondary mt-2">More templates coming soon.</p>
+            </div>
+        </div>
+
+        <!-- Date & Time -->
+        <div class="mb-8">
+            <h2 class="font-heading text-xl font-semibold text-text-primary mb-4 pb-2 border-b border-border">Date & Time</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Wedding Date</label>
+                    {{ form.wedding_date(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm", type="date") }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Ceremony Time</label>
+                    {{ form.ceremony_time(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm", type="time") }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Reception Time</label>
+                    {{ form.reception_time(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm", type="time") }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Couple Names -->
+        <div class="mb-8">
+            <h2 class="font-heading text-xl font-semibold text-text-primary mb-4 pb-2 border-b border-border">Couple Names</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Bride Name (English)</label>
+                    {{ form.bride_name_en(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm", placeholder="Bride's name in English") }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Bride Name (Khmer) <span class="font-khmer">ភាសាខ្មែរ</span></label>
+                    {{ form.bride_name_km(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm font-khmer", placeholder="ឈ្មោះកូនក្រមុំ") }}
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Groom Name (English)</label>
+                    {{ form.groom_name_en(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm", placeholder="Groom's name in English") }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Groom Name (Khmer) <span class="font-khmer">ភាសាខ្មែរ</span></label>
+                    {{ form.groom_name_km(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm font-khmer", placeholder="ឈ្មោះកូនកំលោះ") }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Venue -->
+        <div class="mb-8">
+            <h2 class="font-heading text-xl font-semibold text-text-primary mb-4 pb-2 border-b border-border">Venue</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Venue Name (English)</label>
+                    {{ form.venue_name_en(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm", placeholder="Venue name in English") }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Venue Name (Khmer)</label>
+                    {{ form.venue_name_km(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm font-khmer", placeholder="ឈ្មោះទីកន្លែង") }}
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Venue Address (English)</label>
+                    {{ form.venue_address_en(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm", placeholder="Full address in English") }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Venue Address (Khmer)</label>
+                    {{ form.venue_address_km(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm font-khmer", placeholder="អាសយដ្ឋាន") }}
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Google Maps URL</label>
+                    {{ form.venue_map_url(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm", placeholder="https://maps.google.com/...") }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Organizer Phone</label>
+                    {{ form.organizer_phone(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm", placeholder="+855 12 345 678") }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Welcome Message -->
+        <div class="mb-8">
+            <h2 class="font-heading text-xl font-semibold text-text-primary mb-4 pb-2 border-b border-border">Welcome Message</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">English</label>
+                    {{ form.welcome_message_en(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm", rows="4", placeholder="Welcome message for English-speaking guests") }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-text-secondary mb-2">Khmer <span class="font-khmer">ភាសាខ្មែរ</span></label>
+                    {{ form.welcome_message_km(class="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm font-khmer", rows="4", placeholder="សារស្វាគមន៍") }}
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end">
+            <button type="submit"
+                    class="bg-primary hover:bg-primary-dark text-white font-medium py-3 px-8 rounded-lg transition-colors duration-200 text-sm">
+                Save Settings
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
