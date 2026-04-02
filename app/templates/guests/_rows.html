@@ -1,0 +1,10 @@
+{% for guest in guests %}
+{% include "guests/_row.html" %}
+{% endfor %}
+{% if not guests %}
+<tr>
+    <td colspan="8" class="px-4 py-8 text-center text-text-secondary text-sm">
+        No guests match your search.
+    </td>
+</tr>
+{% endif %}
