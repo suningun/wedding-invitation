@@ -1,0 +1,29 @@
+<div class="space-y-3">
+    {% for guest in guests %}
+    <button onclick="openCheckinModal('{{ guest.guest_id }}')"
+            class="w-full text-left bg-surface rounded-xl border border-border p-5 hover:border-primary hover:shadow-md transition-all duration-200 flex items-center justify-between">
+        <div>
+            <p class="font-medium text-lg text-text-primary">{{ guest.full_name }}</p>
+            <p class="text-sm text-text-secondary">
+                {{ guest.side | capitalize }} side
+                {% if guest.nickname %}&middot; {{ guest.nickname }}{% endif %}
+                {% if guest.phone %}&middot; {{ guest.phone }}{% endif %}
+            </p>
+        </div>
+        <div>
+            {% if guest.checked_in %}
+            <span class="inline-block px-3 py-1.5 rounded-full bg-success/10 text-success text-sm font-medium">
+                Checked In
+            </span>
+            {% else %}
+            <span class="inline-block px-3 py-1.5 rounded-full bg-primary/10 text-primary-dark text-sm font-medium">
+                Tap to Check In
+            </span>
+            {% endif %}
+        </div>
+    </button>
+    {% endfor %}
+    {% if not guests %}
+    <p class="text-center text-text-secondary text-sm py-8">No guests found. Try a different search.</p>
+    {% endif %}
+</div>
