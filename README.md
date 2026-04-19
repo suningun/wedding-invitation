@@ -108,16 +108,12 @@ If you change the models later, run `flask db migrate` and `flask db upgrade` ag
 ## Running the App
 
 ```bash
-flask run
+python run.py
 ```
 
 Then open [http://localhost:5000](http://localhost:5000) in your browser.
 
-For development with auto-reload:
-
-```bash
-flask run --debug
-```
+The app will run on `0.0.0.0:5000` and be accessible via localhost, 127.0.0.1, or any other IP address on your machine.
 
 ## Usage Guide
 
