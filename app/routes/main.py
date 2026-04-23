@@ -1,4 +1,5 @@
 """Main routes: dashboard and wedding settings."""
+
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app import db
@@ -109,7 +110,7 @@ def dashboard():
 @main_bp.route("/dashboard/stats")
 @login_required
 def dashboard_stats():
-    """HTMX endpoint: return updated stats for real-time dashboard polling.\"\"\"
+    """HTMX endpoint: return updated stats for real-time dashboard polling."""
     guests = get_guests()
     wedding = get_wedding()
     # Recalculate all statistics for fresh data
