@@ -1,4 +1,5 @@
 """SQLAlchemy models for the Wedding Management Dashboard."""
+
 import uuid
 from datetime import datetime, timezone
 from decimal import Decimal
@@ -9,7 +10,7 @@ from app import db
 
 
 def generate_uuid() -> str:
-    """Generate a new UUID4 string."""
+    """Generate a new UUID4 string for unique IDs across system."""
     return str(uuid.uuid4())
 
 
@@ -22,16 +23,18 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(200), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
-    created_at = db.Column(
-        db.DateTime, default=lambda: datetime.now(timezone.utc)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    wedding = db.relationship(
+        "WeddingEvent", backref="organizer", uselist=False, lazy=True
     )
 
-    wedding = db.relationship("WeddingEvent", backref="organizer", uselist=False, lazy=True)
-
+    # Encrypt password using PBKDF2:SHA256 for secure storage
     def set_password(self, password: str) -> None:
-        """Hash and store a plaintext password."""
+        """Hash and store a plaintext password using PBKDF2:SHA256 encryption."""
         self.password_hash = generate_password_hash(password, method="pbkdf2:sha256")
 
+    # Verify user password during login
     def check_password(self, password: str) -> bool:
         """Verify a plaintext password against the stored hash."""
         return check_password_hash(self.password_hash, password)
@@ -66,9 +69,7 @@ class WeddingEvent(db.Model):
     venue_address = db.Column(db.JSON, default=lambda: {"en": "", "km": ""})
     welcome_message = db.Column(db.JSON, default=lambda: {"en": "", "km": ""})
 
-    created_at = db.Column(
-        db.DateTime, default=lambda: datetime.now(timezone.utc)
-    )
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(
         db.DateTime,
         default=lambda: datetime.now(timezone.utc),
@@ -111,9 +112,7 @@ class Guest(db.Model):
     gift_note = db.Column(db.String(500), nullable=True)
     notes = db.Column(db.Text, nullable=True)
 
-    created_at = db.Column(
-        db.DateTime, default=lambda: datetime.now(timezone.utc)
-    )
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(
         db.DateTime,
         default=lambda: datetime.now(timezone.utc),

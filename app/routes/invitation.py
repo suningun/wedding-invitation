@@ -1,4 +1,5 @@
 """Public invitation route — no login required."""
+
 from flask import Blueprint, render_template, abort
 from app.models import Guest, WeddingEvent
 from app.utils import get_lang_value
@@ -8,27 +9,27 @@ invitation_bp = Blueprint("invitation", __name__)
 VALID_TEMPLATES = {"classic"}
 
 
+# Public invitation page (no login required) - accessed via unique token per guest
 @invitation_bp.route("/invite/<token>")
 def invitation(token: str):
-    """Render the public invitation card for a guest by their unique token.
-
-    The invitation template is determined by the wedding's `template` field.
-    """
+    """Render personalized invitation card for guest using unique token (no login needed)."""
+    # Fetch guest by unique invitation token
     guest = Guest.query.filter_by(invitation_token=token).first()
     if not guest:
         abort(404)
 
-    wedding = WeddingEvent.query.filter_by(
-        wedding_id=guest.wedding_id
-    ).first()
+    # Fetch wedding details
+    wedding = WeddingEvent.query.filter_by(wedding_id=guest.wedding_id).first()
     if not wedding:
         abort(404)
 
+    # Use guest's preferred language (English or Khmer)
     lang = guest.language or "en"
     template_name = wedding.template or "classic"
     if template_name not in VALID_TEMPLATES:
         template_name = "classic"
 
+    # Prepare invitation context with multilingual data
     context = {
         "guest": guest,
         "lang": lang,

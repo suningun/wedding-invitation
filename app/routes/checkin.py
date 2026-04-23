@@ -1,4 +1,5 @@
 """Check-in routes: search guests and record check-in with gift details."""
+
 from datetime import datetime, timezone
 from decimal import Decimal
 
@@ -16,26 +17,30 @@ def get_wedding():
     return WeddingEvent.query.filter_by(user_id=current_user.id).first()
 
 
+# Display check-in interface with search box
 @checkin_bp.route("/check-in")
 @login_required
 def checkin_index():
-    """Display the check-in page with a search bar."""
+    """Display the check-in page with search box for finding guests."""
     return render_template("checkin/index.html")
 
 
+# Real-time search for check-in (HTMX endpoint)
 @checkin_bp.route("/check-in/search")
 @login_required
 def checkin_search():
-    """HTMX endpoint: return guest cards matching the search query."""
+    """HTMX endpoint: search guests and return matching guest cards."""
     wedding = get_wedding()
     q = request.args.get("q", "").strip().lower()
 
     if not q or not wedding:
         return render_template("checkin/_results.html", guests=[])
 
-    guests = Guest.query.filter_by(wedding_id=wedding.wedding_id).order_by(
-        Guest.full_name
-    ).all()
+    guests = (
+        Guest.query.filter_by(wedding_id=wedding.wedding_id)
+        .order_by(Guest.full_name)
+        .all()
+    )
     matches = [
         g
         for g in guests
@@ -46,10 +51,11 @@ def checkin_search():
     return render_template("checkin/_results.html", guests=matches)
 
 
+# Load check-in modal form (HTMX endpoint)
 @checkin_bp.route("/check-in/<guest_id>/modal")
 @login_required
 def checkin_modal(guest_id: str):
-    """HTMX endpoint: return the check-in modal for a specific guest."""
+    """HTMX endpoint: return check-in form modal pre-populated with guest & gift data."""
     wedding = get_wedding()
     if not wedding:
         return "", 404
@@ -67,10 +73,11 @@ def checkin_modal(guest_id: str):
     return render_template("checkin/_modal.html", guest=guest, form=form)
 
 
+# Record guest arrival & gift details
 @checkin_bp.route("/check-in/<guest_id>", methods=["POST"])
 @login_required
 def checkin_submit(guest_id: str):
-    """Process a guest check-in: mark as checked in and save gift details."""
+    """Mark guest as checked-in with timestamp and record gift details."""
     wedding = get_wedding()
     if not wedding:
         return "", 404
@@ -81,10 +88,12 @@ def checkin_submit(guest_id: str):
     form = CheckInForm()
     if form.validate_on_submit():
         try:
+            # Mark guest as checked in with current timestamp (only first time)
             if not guest.checked_in:
                 guest.checked_in = True
                 guest.check_in_time = datetime.now(timezone.utc)
 
+            # Record gift amount, currency, and note
             guest.gift_amount = form.gift_amount.data or Decimal("0.00")
             guest.gift_currency = form.gift_currency.data
             guest.gift_note = form.gift_note.data

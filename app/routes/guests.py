@@ -11,13 +11,15 @@ from app.forms import GuestForm, GuestImportForm
 guests_bp = Blueprint("guests", __name__)
 
 
+# Helper function to fetch current user's wedding for authorization
 def get_wedding():
-    """Get the current user's wedding, or None."""
+    """Get the current user's wedding, or None (ensures data isolation)."""
     return WeddingEvent.query.filter_by(user_id=current_user.id).first()
 
 
+# Security check: only return guest if they belong to current user's wedding
 def get_guest_or_404(guest_id: str) -> Guest:
-    """Get a guest that belongs to the current user's wedding, or 404."""
+    """Get a guest that belongs to the current user's wedding, or return 404 (security)."""
     wedding = get_wedding()
     if not wedding:
         abort(404)
@@ -27,10 +29,11 @@ def get_guest_or_404(guest_id: str) -> Guest:
     return guest
 
 
+# Display all guests with filtering (shared/checked-in status)
 @guests_bp.route("/guests")
 @login_required
 def guest_list():
-    """Display the guest list with filtering support."""
+    """Display the guest list with status filtering (shared/checked-in)."""
     wedding = get_wedding()
     filter_by = request.args.get("filter", "all")
 
@@ -63,10 +66,11 @@ def guest_list():
     )
 
 
+# Real-time search endpoint for HTMX (searches by name/nickname/phone)
 @guests_bp.route("/guests/search")
 @login_required
 def guest_search():
-    """HTMX endpoint: return filtered guest table rows matching a search query."""
+    """HTMX endpoint: real-time search across name, nickname, and phone fields."""
     wedding = get_wedding()
     q = request.args.get("q", "").strip().lower()
     filter_by = request.args.get("filter", "all")
@@ -102,10 +106,11 @@ def guest_search():
     )
 
 
+# Create new guest with auto-generated UUID & invitation token
 @guests_bp.route("/guests/add", methods=["POST"])
 @login_required
 def guest_add():
-    """Add a new guest to the current user's wedding."""
+    """Add a new guest to the current user's wedding (auto-generates unique token)."""
     wedding = get_wedding()
     if not wedding:
         flash("Please configure your wedding in Settings first.", "danger")
@@ -137,16 +142,19 @@ def guest_add():
     return redirect(url_for("guests.guest_list"))
 
 
+# Edit guest details (GET shows form, POST saves changes)
 @guests_bp.route("/guests/<guest_id>/edit", methods=["GET", "POST"])
 @login_required
 def guest_edit(guest_id: str):
-    """Edit an existing guest. GET returns the form partial, POST saves changes."""
+    """Edit an existing guest (GET returns form, POST saves updates)."""
     guest = get_guest_or_404(guest_id)
     form = GuestForm(obj=guest)
 
+    # GET: Return form for editing guest
     if request.method == "GET":
         return render_template("guests/_form.html", form=form, guest=guest)
 
+    # POST: Save guest updates to database
     if form.validate_on_submit():
         try:
             guest.full_name = form.full_name.data

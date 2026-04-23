@@ -1,17 +1,16 @@
 """Utility helpers for the Wedding Management Dashboard."""
+
 from typing import Any
 
 
+# Extract localized text from JSON multilingual fields with fallback
 def get_lang_value(json_field: Any, language: str, fallback: str = "en") -> str:
-    """Extract a localized value from a JSON multilingual field.
+    """Extract localized value from JSON field {"en": "...", "km": "..."} with fallback.
 
-    Args:
-        json_field: A dict like {"en": "Hello", "km": "សួស្តី"} or None.
-        language: The desired language key ("en" or "km").
-        fallback: Fallback language if the desired key is missing.
-
-    Returns:
-        The localized string, or empty string if nothing is found.
+    This utility handles multilingual content stored as JSON:
+    - Fetches requested language key first
+    - Falls back to default language if not found
+    - Returns empty string if field is empty/invalid
     """
     if not json_field or not isinstance(json_field, dict):
         return ""

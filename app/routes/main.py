@@ -8,37 +8,43 @@ from app.forms import WeddingSettingsForm
 main_bp = Blueprint("main", __name__)
 
 
+# Helper function to fetch current user's wedding
 def get_wedding():
-    """Get the current user's wedding, or None."""
+    """Get the current user's wedding (ensures data isolation)."""
     return WeddingEvent.query.filter_by(user_id=current_user.id).first()
 
 
+# Helper function to fetch all guests for current wedding
 def get_guests():
-    """Get all guests belonging to the current user's wedding."""
+    """Get all guests for the current user's wedding."""
     wedding = get_wedding()
     if not wedding:
         return []
     return Guest.query.filter_by(wedding_id=wedding.wedding_id).all()
 
 
+# Redirect to dashboard
 @main_bp.route("/")
 @login_required
 def index():
-    """Redirect root to the dashboard."""
+    """Redirect root URL to dashboard."""
     return redirect(url_for("main.dashboard"))
 
 
+# Main dashboard with real-time stats: guests, check-ins, gifts by side & currency
 @main_bp.route("/dashboard")
 @login_required
 def dashboard():
-    """Display the dashboard with summary stats and recent check-ins."""
+    """Display main dashboard with statistics, charts, and recent check-ins."""
     guests = get_guests()
     wedding = get_wedding()
+    # Calculate basic statistics
     total = len(guests)
     shared = sum(1 for g in guests if g.invitation_shared)
     not_shared = total - shared
     checked_in = sum(1 for g in guests if g.checked_in)
 
+    # Aggregate gifts by currency
     total_usd = sum(
         float(g.gift_amount or 0) for g in guests if g.gift_currency == "USD"
     )
@@ -99,12 +105,14 @@ def dashboard():
     )
 
 
+# HTMX polling endpoint - returns updated stats every 30 seconds
 @main_bp.route("/dashboard/stats")
 @login_required
 def dashboard_stats():
-    """Return dashboard stats as an HTMX partial for live polling."""
+    """HTMX endpoint: return updated stats for real-time dashboard polling.\"\"\"
     guests = get_guests()
     wedding = get_wedding()
+    # Recalculate all statistics for fresh data
     total = len(guests)
     shared = sum(1 for g in guests if g.invitation_shared)
     not_shared = total - shared
@@ -116,6 +124,7 @@ def dashboard_stats():
         float(g.gift_amount or 0) for g in guests if g.gift_currency == "KHR"
     )
 
+    # Get 10 most recent check-ins
     recent_checkins = []
     if wedding:
         recent_checkins = (

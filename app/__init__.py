@@ -1,4 +1,5 @@
 """Flask application factory for the Wedding Management Dashboard."""
+
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -13,9 +14,10 @@ csrf = CSRFProtect()
 
 
 def create_app() -> Flask:
-    """Create and configure the Flask application."""
+    """Flask application factory: initializes app, database, auth, and blueprints."""
     app = Flask(__name__, instance_relative_config=True)
 
+    # Load configuration from environment variables
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-key")
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
         "DATABASE_URL", "sqlite:///wedding.db"
@@ -25,6 +27,7 @@ def create_app() -> Flask:
 
     os.makedirs(app.instance_path, exist_ok=True)
 
+    # Initialize Flask extensions (database, authentication, migrations, security)
     db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"
@@ -34,10 +37,12 @@ def create_app() -> Flask:
 
     from app.models import User
 
+    # Load user from session cookie for authentication
     @login_manager.user_loader
     def load_user(user_id: str):
         return User.query.get(user_id)
 
+    # Import and register all route blueprints
     from app.routes.auth import auth_bp
     from app.routes.main import main_bp
     from app.routes.guests import guests_bp
