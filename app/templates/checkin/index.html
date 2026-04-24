@@ -1,48 +1,28 @@
-{% extends "base.html" %}
-{% block title %}Check-In — Wedding Dashboard{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Check-In — Wedding Dashboard{%
+endblock %} {% block content %}
 <div class="mb-8 text-center">
-    <h1 class="font-heading text-4xl font-semibold text-text-primary">Guest Check-In</h1>
-    <p class="text-text-secondary text-sm mt-2">Search for a guest to check them in</p>
+  <h1 class="font-heading text-4xl font-semibold text-text-primary">
+    Guest Check-In
+  </h1>
+  <p class="text-text-secondary text-sm mt-2">
+    Search for a guest to check them in
+  </p>
 </div>
 
 <!-- Large search input optimized for tablet -->
 <div class="max-w-2xl mx-auto mb-8">
-    <input type="text"
-           name="q"
-           placeholder="Type a name, nickname, or phone number..."
-           hx-get="{{ url_for('checkin.checkin_search') }}"
-           hx-trigger="keyup changed delay:300ms"
-           hx-target="#checkin-results"
-           autofocus
-           class="w-full px-6 py-5 rounded-xl border-2 border-border bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-lg shadow-sm">
+  <input
+    type="text"
+    name="q"
+    placeholder="Type a name, nickname, or phone number..."
+    hx-get="{{ url_for('checkin.checkin_search') }}"
+    hx-trigger="keyup changed delay:300ms"
+    hx-target="#checkin-results"
+    autofocus
+    class="w-full px-6 py-5 rounded-xl border-2 border-border bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-lg shadow-sm"
+  />
 </div>
 
 <!-- Results -->
-<div id="checkin-results" class="max-w-2xl mx-auto">
-</div>
-
-<!-- Check-in Modal -->
-<div id="checkinModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-    <div class="bg-surface rounded-xl shadow-lg max-w-md w-full mx-4">
-        <div id="checkinModalContent" class="p-6">
-        </div>
-    </div>
-</div>
-
-<script>
-function openCheckinModal(guestId) {
-    fetch('/check-in/' + guestId + '/modal')
-        .then(r => r.text())
-        .then(html => {
-            document.getElementById('checkinModalContent').innerHTML = html;
-            document.getElementById('checkinModal').classList.remove('hidden');
-        });
-}
-
-function closeCheckinModal() {
-    document.getElementById('checkinModal').classList.add('hidden');
-}
-</script>
+<div id="checkin-results" class="max-w-2xl mx-auto"></div>
 {% endblock %}

@@ -1,110 +1,188 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Wedding Dashboard{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Khmer:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Khmer:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/custom.css') }}"
+    />
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#D4A574',
-                        'primary-dark': '#B8864F',
-                        accent: '#A8324F',
-                        background: '#FAF7F2',
-                        surface: '#FFFFFF',
-                        'text-primary': '#2D2420',
-                        'text-secondary': '#6B5D54',
-                        border: '#E8DFD3',
-                        success: '#4A7C59',
-                        danger: '#A8324F',
-                    },
-                    fontFamily: {
-                        heading: ['"Cormorant Garamond"', 'serif'],
-                        body: ['"Inter"', 'sans-serif'],
-                        khmer: ['"Noto Sans Khmer"', 'sans-serif'],
-                    },
-                },
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#D4A574",
+              "primary-dark": "#B8864F",
+              accent: "#A8324F",
+              background: "#FAF7F2",
+              surface: "#FFFFFF",
+              "text-primary": "#2D2420",
+              "text-secondary": "#6B5D54",
+              border: "#E8DFD3",
+              success: "#4A7C59",
+              danger: "#A8324F",
             },
-        }
+            fontFamily: {
+              heading: ['"Cormorant Garamond"', "serif"],
+              body: ['"Inter"', "sans-serif"],
+              khmer: ['"Noto Sans Khmer"', "sans-serif"],
+            },
+          },
+        },
+      };
     </script>
-</head>
-<body class="bg-background font-body text-text-primary min-h-screen">
+  </head>
+  <body class="bg-background font-body text-text-primary min-h-screen">
     <!-- Navigation -->
     <nav class="bg-surface border-b border-border shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-8">
-                    <a href="{{ url_for('main.dashboard') }}" class="font-heading text-2xl font-semibold text-primary-dark">
-                        Mongkol Dashboard
-                    </a>
-                    <div class="hidden md:flex space-x-1">
-                        <a href="{{ url_for('main.dashboard') }}"
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                                    {% if request.endpoint == 'main.dashboard' %}bg-primary/10 text-primary-dark{% else %}text-text-secondary hover:text-text-primary hover:bg-background{% endif %}">
-                                Dashboard
-                            </a>
-                            <a href="{{ url_for('guests.guest_list') }}"
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                                    {% if request.endpoint and 'guests' in request.endpoint %}bg-primary/10 text-primary-dark{% else %}text-text-secondary hover:text-text-primary hover:bg-background{% endif %}">
-                                Guests
-                            </a>
-                            <a href="{{ url_for('checkin.checkin_index') }}"
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                                    {% if request.endpoint and 'checkin' in request.endpoint %}bg-primary/10 text-primary-dark{% else %}text-text-secondary hover:text-text-primary hover:bg-background{% endif %}">
-                                Check-In
-                            </a>
-                            <a href="{{ url_for('main.settings') }}"
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                                    {% if request.endpoint == 'main.settings' %}bg-primary/10 text-primary-dark{% else %}text-text-secondary hover:text-text-primary hover:bg-background{% endif %}">
-                                Settings
-                            </a>
-                        </div>
-                    </div>
-                    <a href="{{ url_for('auth.logout') }}"
-                    class="text-sm text-text-secondary hover:text-accent transition-colors">
-                        Logout
-                </a>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center space-x-8">
+            <a
+              href="{{ url_for('main.dashboard') }}"
+              class="font-heading text-2xl font-semibold text-primary-dark"
+            >
+              Mongkol Dashboard
+            </a>
+            <div class="hidden md:flex space-x-1">
+              <a
+                href="{{ url_for('main.dashboard') }}"
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors {% if request.endpoint == 'main.dashboard' %}bg-primary/10 text-primary-dark{% else %}text-text-secondary hover:text-text-primary hover:bg-background{% endif %}"
+              >
+                Dashboard
+              </a>
+              <a
+                href="{{ url_for('guests.guest_list') }}"
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors {% if request.endpoint and 'guests' in request.endpoint %}bg-primary/10 text-primary-dark{% else %}text-text-secondary hover:text-text-primary hover:bg-background{% endif %}"
+              >
+                Guests
+              </a>
+              <a
+                href="{{ url_for('checkin.checkin_index') }}"
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors {% if request.endpoint and 'checkin' in request.endpoint %}bg-primary/10 text-primary-dark{% else %}text-text-secondary hover:text-text-primary hover:bg-background{% endif %}"
+              >
+                Check-In
+              </a>
+              <a
+                href="{{ url_for('main.settings') }}"
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors {% if request.endpoint == 'main.settings' %}bg-primary/10 text-primary-dark{% else %}text-text-secondary hover:text-text-primary hover:bg-background{% endif %}"
+              >
+                Settings
+              </a>
             </div>
+          </div>
+          <a
+            href="{{ url_for('auth.logout') }}"
+            class="text-sm text-text-secondary hover:text-accent transition-colors"
+          >
+            Logout
+          </a>
         </div>
-        <!-- Mobile nav -->
-        <div class="md:hidden border-t border-border px-4 py-2 flex space-x-1 overflow-x-auto">
-            <a href="{{ url_for('main.dashboard') }}" class="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap {% if request.endpoint == 'main.dashboard' %}bg-primary/10 text-primary-dark{% else %}text-text-secondary{% endif %}">Dashboard</a>
-            <a href="{{ url_for('guests.guest_list') }}" class="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap {% if request.endpoint and 'guests' in request.endpoint %}bg-primary/10 text-primary-dark{% else %}text-text-secondary{% endif %}">Guests</a>
-            <a href="{{ url_for('checkin.checkin_index') }}" class="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap {% if request.endpoint and 'checkin' in request.endpoint %}bg-primary/10 text-primary-dark{% else %}text-text-secondary{% endif %}">Check-In</a>
-            <a href="{{ url_for('main.settings') }}" class="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap {% if request.endpoint == 'main.settings' %}bg-primary/10 text-primary-dark{% else %}text-text-secondary{% endif %}">Settings</a>
-        </div>
+      </div>
+      <!-- Mobile nav -->
+      <div
+        class="md:hidden border-t border-border px-4 py-2 flex space-x-1 overflow-x-auto"
+      >
+        <a
+          href="{{ url_for('main.dashboard') }}"
+          class="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap {% if request.endpoint == 'main.dashboard' %}bg-primary/10 text-primary-dark{% else %}text-text-secondary{% endif %}"
+          >Dashboard</a
+        >
+        <a
+          href="{{ url_for('guests.guest_list') }}"
+          class="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap {% if request.endpoint and 'guests' in request.endpoint %}bg-primary/10 text-primary-dark{% else %}text-text-secondary{% endif %}"
+          >Guests</a
+        >
+        <a
+          href="{{ url_for('checkin.checkin_index') }}"
+          class="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap {% if request.endpoint and 'checkin' in request.endpoint %}bg-primary/10 text-primary-dark{% else %}text-text-secondary{% endif %}"
+          >Check-In</a
+        >
+        <a
+          href="{{ url_for('main.settings') }}"
+          class="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap {% if request.endpoint == 'main.settings' %}bg-primary/10 text-primary-dark{% else %}text-text-secondary{% endif %}"
+          >Settings</a
+        >
+      </div>
     </nav>
 
     <!-- Flash messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 space-y-2">
-        {% for category, message in messages %}
-        <div class="p-4 rounded-xl text-sm
-                    {% if category == 'success' %}bg-success/10 text-success border border-success/20
-                    {% elif category == 'danger' %}bg-danger/10 text-danger border border-danger/20
-                    {% else %}bg-primary/10 text-primary-dark border border-primary/20{% endif %}">
-            {{ message }}
-        </div>
-        {% endfor %}
+      {% for category, message in messages %}
+      <div
+        class="p-4 rounded-xl text-sm {% if category == 'success' %}bg-success/10 text-success border border-success/20 {% elif category == 'danger' %}bg-danger/10 text-danger border border-danger/20 {% else %}bg-primary/10 text-primary-dark border border-primary/20{% endif %}"
+      >
+        {{ message }}
+      </div>
+      {% endfor %}
     </div>
-    {% endif %}
-    {% endwith %}
+    {% endif %} {% endwith %}
 
     <!-- Main content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {% block content %}{% endblock %}
+      {% block content %}{% endblock %}
     </main>
 
+    <!-- Modal Container -->
+    <div
+      id="modal-container"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden"
+      onclick="if (event.target.id === 'modal-container') closeModal();"
+    ></div>
+
     {% block scripts %}{% endblock %}
-</body>
+
+    <script>
+      function copyLink(url) {
+        navigator.clipboard
+          .writeText(url)
+          .then(() => {
+            alert("Invitation link copied!");
+          })
+          .catch(() => alert("Failed to copy"));
+      }
+      function closeEditModal() {
+        closeModal();
+      }
+      function closeCheckinModal() {
+        closeModal();
+      }
+      function closeModal() {
+        const modal = document.getElementById("modal-container");
+        modal.innerHTML = "";
+        modal.classList.add("hidden");
+      }
+      function openEditModal(guestId) {
+        const modal = document.getElementById("modal-container");
+        fetch("/guests/" + guestId + "/edit")
+          .then((r) => r.text())
+          .then((html) => {
+            modal.innerHTML = html;
+            modal.classList.remove("hidden");
+          });
+      }
+      function openCheckinModal(guestId) {
+        const modal = document.getElementById("modal-container");
+        fetch("/check-in/" + guestId + "/modal")
+          .then((r) => r.text())
+          .then((html) => {
+            modal.innerHTML = html;
+            modal.classList.remove("hidden");
+          });
+      }
+    </script>
+  </body>
 </html>
