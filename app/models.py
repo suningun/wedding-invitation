@@ -13,7 +13,6 @@ def generate_uuid() -> str:
     """Generate a new UUID4 string for unique IDs across system."""
     return str(uuid.uuid4())
 
-
 class User(UserMixin, db.Model):
     """Registered organizer who manages their own wedding."""
 
