@@ -2,12 +2,6 @@
 
 A beautiful, full-featured wedding management dashboard for organizing guests, sharing invitations, and managing check-ins on the big day.
 
-## Screenshots
-
-![Dashboard](docs/screenshots/dashboard.png)
-![Guest List](docs/screenshots/guest-list.png)
-![Check-In](docs/screenshots/check-in.png)
-![Invitation Card](docs/screenshots/invitation-card.png)
 
 ## Features
 
@@ -36,8 +30,8 @@ A beautiful, full-featured wedding management dashboard for organizing guests, s
 ### 1. Clone the repository
 
 ```bash
-git clone <your-repo-url>
-cd wedding-mvp
+git clone <https://github.com/suningun/wedding-invitation.gitl>
+cd wedding-invitation
 ```
 
 ### 2. Create a virtual environment
